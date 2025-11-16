@@ -2,14 +2,15 @@ import React from 'react';
 import { FaPlay, FaBook, FaStar, FaUsers, FaClock } from 'react-icons/fa';
 
 const CourseCard = ({ course }) => {
-  const branchColors = {
-    ece: 'blue',
-    ee: 'green',
-    me: 'red',
-    ce: 'yellow'
+  const getBranchColor = (branch) => {
+    const colors = {
+      ece: 'bg-blue-500',
+      ee: 'bg-green-500',
+      me: 'bg-red-500',
+      ce: 'bg-yellow-500'
+    };
+    return colors[branch] || 'bg-gray-500';
   };
-
-  const color = branchColors[course.branch];
 
   return (
     <div className="card p-6 hover:scale-105 transition-transform duration-200">
@@ -19,7 +20,7 @@ const CourseCard = ({ course }) => {
           alt={course.title}
           className="w-full h-48 object-cover rounded-lg mb-4"
         />
-        <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-white text-sm font-medium bg-${color}-500`}>
+        <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-white text-sm font-medium ${getBranchColor(course.branch)}`}>
           {course.branch.toUpperCase()}
         </div>
       </div>
@@ -28,7 +29,17 @@ const CourseCard = ({ course }) => {
         {course.title}
       </h3>
       
-      <p className="text-gray-600 mb-4">By {course.instructor}</p>
+      {/* Instructor with Photo */}
+      <div className="flex items-center mb-4">
+        <img
+          src={course.instructorPhoto}
+          alt={course.instructor}
+          className="w-8 h-8 rounded-full mr-3"
+        />
+        <div>
+          <p className="text-gray-600 text-sm">By {course.instructor}</p>
+        </div>
+      </div>
       
       <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
         <div className="flex items-center space-x-4">

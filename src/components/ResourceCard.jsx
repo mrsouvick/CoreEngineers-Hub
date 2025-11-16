@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaDownload, FaFilePdf, FaMap, FaBook, FaFileAlt } from 'react-icons/fa';
+import { FaDownload, FaFilePdf, FaMap, FaBook, FaFileAlt, FaUser } from 'react-icons/fa';
 
 const ResourceCard = ({ resource }) => {
   const getIcon = (type) => {
@@ -48,6 +48,20 @@ const ResourceCard = ({ resource }) => {
             </h3>
           </div>
         </div>
+      </div>
+
+      {/* Author with Photo */}
+      <div className="flex items-center mb-4">
+        {resource.authorPhoto ? (
+          <img
+            src={resource.authorPhoto}
+            alt={resource.author}
+            className="w-6 h-6 rounded-full mr-2"
+          />
+        ) : (
+          <FaUser className="w-4 h-4 text-gray-400 mr-2" />
+        )}
+        <span className="text-sm text-gray-600">By {resource.author}</span>
       </div>
 
       <div className="flex items-center justify-between text-sm text-gray-600 mb-4">

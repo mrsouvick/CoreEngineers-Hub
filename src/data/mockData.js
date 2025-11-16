@@ -4,28 +4,48 @@ export const teamMembers = [
     name: "Souvick Kumar Halder",
     role: "Founder & Admin",
     description: "Responsible for overall planning, management, and maintaining the academic direction of the channel.",
-    avatar: "/api/placeholder/150/150"
+    avatar: "https://scontent.fccu3-1.fna.fbcdn.net/v/t39.30808-6/544989577_1788689405065662_8868460709953778179_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=f1oomo6UqgUQ7kNvwHEhDLW&_nc_oc=AdkO9wA6P0vTyPsVdtS9nEONOiDW7WtPdKI64XjnI-uxVjFTnp3Rtf-GMe-jlxTJVlI&_nc_zt=23&_nc_ht=scontent.fccu3-1.fna&_nc_gid=sbIrNQ8DBZqRLUmRHdXwOQ&oh=00_Afjd43s2Uol1zInUeyK3juJ4PBxTtZbnfZzSwJLyHDWWyQ&oe=691EDB50",
+    social: {
+      linkedin: "https://www.linkedin.com/in/souvick-kumar-halder-752508292/",
+      twitter: "#",
+      email: "mailto:reach.souvick@gmail.com"
+    }
   },
   {
     id: 2,
     name: "Surajit Ghosh",
     role: "Tutor",
-    description: "Creates high-quality, easy-to-follow lectures and academic content.",
-    avatar: "/api/placeholder/150/150"
+    description: "Creates high-quality, easy-to-follow lectures and academic content for Electronics and Communication Engineering.",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+    social: {
+      linkedin: "#",
+      twitter: "#",
+      email: "#"
+    }
   },
   {
     id: 3,
     name: "Tanmay Maity",
     role: "Tutor",
-    description: "Handles semester-wise explanations, problem solutions, and core subject videos.",
-    avatar: "/api/placeholder/150/150"
+    description: "Handles semester-wise explanations, problem solutions, and core subject videos for Mechanical Engineering.",
+    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=400&h=400&fit=crop&crop=face",
+    social: {
+      linkedin: "#",
+      twitter: "#",
+      email: "#"
+    }
   },
   {
     id: 4,
     name: "Sribash Adak",
     role: "Graphics Designer",
     description: "Designs thumbnails, visuals, and branding elements to keep the channel professional and appealing.",
-    avatar: "/api/placeholder/150/150"
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
+    social: {
+      linkedin: "#",
+      twitter: "#",
+      email: "#"
+    }
   }
 ];
 
@@ -43,7 +63,8 @@ export const courses = [
     branch: "ece",
     semester: 3,
     instructor: "Surajit Ghosh",
-    thumbnail: "/api/placeholder/400/250",
+    instructorPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=250&fit=crop",
     videos: 24,
     resources: 15,
     duration: "18 hours",
@@ -56,7 +77,8 @@ export const courses = [
     branch: "ece",
     semester: 4,
     instructor: "Tanmay Maity",
-    thumbnail: "/api/placeholder/400/250",
+    instructorPhoto: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=100&h=100&fit=crop&crop=face",
+    thumbnail: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=250&fit=crop",
     videos: 30,
     resources: 20,
     duration: "22 hours",
@@ -69,7 +91,8 @@ export const courses = [
     branch: "ee",
     semester: 5,
     instructor: "Surajit Ghosh",
-    thumbnail: "/api/placeholder/400/250",
+    instructorPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    thumbnail: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=250&fit=crop",
     videos: 28,
     resources: 18,
     duration: "20 hours",
@@ -82,7 +105,8 @@ export const courses = [
     branch: "me",
     semester: 3,
     instructor: "Tanmay Maity",
-    thumbnail: "/api/placeholder/400/250",
+    instructorPhoto: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=100&h=100&fit=crop&crop=face",
+    thumbnail: "https://images.unsplash.com/photo-1581093588401-7b7b8c9bd0fb?w=400&h=250&fit=crop",
     videos: 26,
     resources: 16,
     duration: "19 hours",
@@ -95,7 +119,8 @@ export const courses = [
     branch: "ce",
     semester: 4,
     instructor: "Surajit Ghosh",
-    thumbnail: "/api/placeholder/400/250",
+    instructorPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    thumbnail: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=250&fit=crop",
     videos: 32,
     resources: 22,
     duration: "24 hours",
@@ -108,7 +133,8 @@ export const courses = [
     branch: "ece",
     semester: 5,
     instructor: "Tanmay Maity",
-    thumbnail: "/api/placeholder/400/250",
+    instructorPhoto: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=100&h=100&fit=crop&crop=face",
+    thumbnail: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?w=400&h=250&fit=crop",
     videos: 29,
     resources: 19,
     duration: "21 hours",
@@ -126,7 +152,9 @@ export const resources = [
     semester: 3,
     format: "PDF",
     pages: 45,
-    downloads: 2100
+    downloads: 2100,
+    author: "Surajit Ghosh",
+    authorPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face"
   },
   {
     id: 2,
@@ -136,7 +164,9 @@ export const resources = [
     semester: "all",
     format: "PDF",
     pages: 12,
-    downloads: 1800
+    downloads: 1800,
+    author: "CoreEngineers Team",
+    authorPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face"
   },
   {
     id: 3,
@@ -146,7 +176,9 @@ export const resources = [
     semester: 4,
     format: "PDF",
     pages: 8,
-    downloads: 1500
+    downloads: 1500,
+    author: "Souvick Kumar Halder",
+    authorPhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face"
   },
   {
     id: 4,
@@ -156,6 +188,8 @@ export const resources = [
     semester: "all",
     format: "PDF",
     pages: 35,
-    downloads: 3200
+    downloads: 3200,
+    author: "Tanmay Maity",
+    authorPhoto: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=50&h=50&fit=crop&crop=face"
   }
 ];
