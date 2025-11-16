@@ -1,31 +1,43 @@
 import React from 'react';
-import { FaPlay, FaBook, FaStar, FaUsers, FaClock } from 'react-icons/fa';
+import { FaPlay, FaBook, FaStar, FaUsers, FaClock, FaGraduationCap } from 'react-icons/fa';
 
 const CourseCard = ({ course }) => {
   const getBranchColor = (branch) => {
     const colors = {
-      ece: 'bg-blue-500',
-      ee: 'bg-green-500',
-      me: 'bg-red-500',
-      ce: 'bg-yellow-500'
+      ece: 'from-blue-500 to-blue-600',
+      ee: 'from-green-500 to-green-600',
+      me: 'from-red-500 to-red-600',
+      ce: 'from-yellow-500 to-yellow-600'
     };
-    return colors[branch] || 'bg-gray-500';
+    return colors[branch] || 'from-gray-500 to-gray-600';
+  };
+
+  const getBranchIcon = (branch) => {
+    const icons = {
+      ece: '🔌',
+      ee: '⚡',
+      me: '⚙️',
+      ce: '🏗️'
+    };
+    return icons[branch] || '📚';
   };
 
   return (
-    <div className="card p-6 hover:scale-105 transition-transform duration-200">
-      <div className="relative">
+    <div className="card group p-6 hover:shadow-2xl transition-all duration-300">
+      <div className="relative overflow-hidden rounded-2xl mb-5">
         <img
           src={course.thumbnail}
           alt={course.title}
-          className="w-full h-48 object-cover rounded-lg mb-4"
+          className="w-full h-48 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-300"
         />
-        <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-white text-sm font-medium ${getBranchColor(course.branch)}`}>
+        <div className={`absolute top-4 left-4 px-4 py-2 rounded-full text-white text-sm font-semibold bg-gradient-to-r ${getBranchColor(course.branch)} shadow-lg`}>
+          <span className="mr-2">{getBranchIcon(course.branch)}</span>
           {course.branch.toUpperCase()}
         </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
       </div>
       
-      <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+      <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors duration-200">
         {course.title}
       </h3>
       
@@ -34,49 +46,47 @@ const CourseCard = ({ course }) => {
         <img
           src={course.instructorPhoto}
           alt={course.instructor}
-          className="w-8 h-8 rounded-full mr-3"
+          className="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-md"
         />
         <div>
-          <p className="text-gray-600 text-sm">By {course.instructor}</p>
+          <p className="text-gray-600 text-sm font-medium">By {course.instructor}</p>
+          <div className="flex items-center text-yellow-500">
+            <FaStar className="mr-1 text-sm" />
+            <span className="text-sm font-semibold">{course.rating}</span>
+          </div>
         </div>
       </div>
       
       <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
-            <FaPlay className="mr-1 text-primary-500" />
+            <FaPlay className="mr-2 text-primary-500" />
             <span>{course.videos} videos</span>
           </div>
           <div className="flex items-center">
-            <FaBook className="mr-1 text-secondary-500" />
+            <FaBook className="mr-2 text-secondary-500" />
             <span>{course.resources} resources</span>
           </div>
         </div>
         <div className="flex items-center">
-          <FaClock className="mr-1 text-gray-400" />
+          <FaClock className="mr-2 text-gray-400" />
           <span>{course.duration}</span>
         </div>
       </div>
       
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <div className="flex items-center text-yellow-500 mr-2">
-            <FaStar className="mr-1" />
-            <span className="font-medium">{course.rating}</span>
-          </div>
-          <div className="flex items-center text-gray-500">
-            <FaUsers className="mr-1" />
-            <span>{course.students.toLocaleString()}</span>
-          </div>
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center text-gray-600">
+          <FaUsers className="mr-2" />
+          <span className="font-semibold">{course.students.toLocaleString()}+ students</span>
         </div>
-        <span className="text-sm font-medium text-gray-500">
-          Semester {course.semester}
+        <span className="text-sm font-semibold bg-primary-100 text-primary-700 px-3 py-1 rounded-full">
+          Sem {course.semester}
         </span>
       </div>
       
-      <button className="btn-primary w-full">
+      <button className="w-full btn-primary group-hover:shadow-xl group-hover:-translate-y-1">
         <FaPlay className="inline mr-2" />
-        Start Course
+        Start Learning
       </button>
     </div>
   );

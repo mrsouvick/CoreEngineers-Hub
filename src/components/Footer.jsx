@@ -1,65 +1,107 @@
 import React from 'react';
-import { FaBook, FaYoutube, FaLinkedin, FaTwitter, FaEnvelope } from 'react-icons/fa';
+import { FaBook, FaYoutube, FaLinkedin, FaTwitter, FaEnvelope, FaHeart, FaGraduationCap } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-        <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-          <div className="space-y-8 xl:col-span-1">
-            <div className="flex items-center">
-              <FaBook className="h-8 w-8 text-primary-400" />
-              <span className="ml-2 text-xl font-bold">CoreEngineers Hub</span>
+    <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <div className="container-responsive py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Brand Section */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center mb-6">
+              <FaBook className="h-8 w-8 text-primary-400 mr-3" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
+                CoreEngineers Hub
+              </span>
             </div>
-            <p className="text-gray-400 text-base">
+            <p className="text-gray-300 text-base leading-relaxed mb-6">
               Making semester-wise learning simple, accurate, and accessible for every MAKAUT engineering student.
             </p>
-            <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-gray-300">
-                <FaYoutube className="h-6 w-6" />
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 p-2 bg-gray-800 rounded-xl hover:bg-gray-700">
+                <FaYoutube className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-gray-300">
-                <FaLinkedin className="h-6 w-6" />
+              <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 p-2 bg-gray-800 rounded-xl hover:bg-gray-700">
+                <FaLinkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-gray-300">
-                <FaTwitter className="h-6 w-6" />
+              <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 p-2 bg-gray-800 rounded-xl hover:bg-gray-700">
+                <FaTwitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-gray-300">
-                <FaEnvelope className="h-6 w-6" />
+              <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 p-2 bg-gray-800 rounded-xl hover:bg-gray-700">
+                <FaEnvelope className="h-5 w-5" />
               </a>
             </div>
           </div>
-          <div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
-            <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div>
-                <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-                  Branches
-                </h3>
-                <ul className="mt-4 space-y-4">
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Electronics & Communication</a></li>
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Electrical Engineering</a></li>
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Mechanical Engineering</a></li>
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Civil Engineering</a></li>
-                </ul>
-              </div>
-              <div className="mt-12 md:mt-0">
-                <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-                  Support
-                </h3>
-                <ul className="mt-4 space-y-4">
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Help Center</a></li>
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Contact Us</a></li>
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Privacy Policy</a></li>
-                  <li><a href="#" className="text-base text-gray-300 hover:text-white">Terms of Service</a></li>
-                </ul>
-              </div>
+
+          {/* Quick Links */}
+          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-6 flex items-center">
+                <FaGraduationCap className="mr-2 text-primary-400" />
+                Engineering Branches
+              </h3>
+              <ul className="space-y-3">
+                {['Electronics & Communication', 'Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Computer Science'].map((branch) => (
+                  <li key={branch}>
+                    <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 text-base">
+                      {branch}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-6">Resources</h3>
+              <ul className="space-y-3">
+                {['Study Materials', 'Question Papers', 'Video Lectures', 'Roadmaps', 'Formula Books'].map((resource) => (
+                  <li key={resource}>
+                    <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 text-base">
+                      {resource}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-6">Support</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link to="/discussion" className="text-gray-300 hover:text-white transition-colors duration-200 text-base">
+                    Discussion Room
+                  </Link>
+                </li>
+                {['Help Center', 'Contact Us', 'Privacy Policy', 'Terms of Service'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 text-base">
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
-        <div className="mt-12 border-t border-gray-700 pt-8">
-          <p className="text-base text-gray-400 xl:text-center">
-            &copy; 2024 CoreEngineers Hub. All rights reserved. Built for MAKAUT students.
-          </p>
+
+        {/* Bottom Section */}
+        <div className="border-t border-gray-700 mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-300 text-base text-center md:text-left">
+              &copy; 2024 CoreEngineers Hub. All rights reserved. Built with <FaHeart className="inline text-red-500 mx-1" /> for MAKAUT students.
+            </p>
+            <div className="flex items-center space-x-6 mt-4 md:mt-0">
+              <span className="text-gray-300 text-sm">10,000+ Students Trusted</span>
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full border-2 border-gray-800 flex items-center justify-center text-white text-xs font-bold">
+                    {i}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
