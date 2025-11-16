@@ -342,11 +342,11 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="text-center mt-16">
-            <a href="#resources" className="btn-primary text-lg px-10 py-4 rounded-2xl">
-              Browse All Resources
-            </a>
-          </div>
+         <div className="text-center mt-12">
+  <Link to="/resources" className="btn-primary text-lg px-8">
+    Browse All Resources
+  </Link>
+</div>
         </div>
       </section>
 

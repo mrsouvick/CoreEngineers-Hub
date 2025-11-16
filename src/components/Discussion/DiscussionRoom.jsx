@@ -6,24 +6,69 @@ import {
   orderBy, 
   query, 
   serverTimestamp,
-  limit
+  limit,
+  where
 } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import { useAuth } from '../../contexts/AuthContext';
+import { useOnlineUsers } from '../../hooks/useOnlineUsers';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import { FaComments, FaUser, FaSignOutAlt, FaArrowLeft, FaUsers, FaRocket, FaGraduationCap } from 'react-icons/fa';
+import { 
+  FaComments, 
+  FaUser, 
+  FaSignOutAlt, 
+  FaArrowLeft, 
+  FaUsers, 
+  FaRocket, 
+  FaGraduationCap,
+  FaBell,
+  FaSearch,
+  FaPlus,
+  FaHashtag,
+  FaPaperPlane,
+  FaRegSmile,
+  FaPaperclip,
+  FaCog,
+  FaVolumeUp,
+  FaVolumeMute,
+  FaBars,
+  FaTimes
+} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const DiscussionRoom = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [activeUsers, setActiveUsers] = useState(24);
+  const [selectedChannel, setSelectedChannel] = useState('general');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [notifications, setNotifications] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, userProfile, logout } = useAuth();
   const navigate = useNavigate();
+  
+  // Real online users
+  const onlineUsers = useOnlineUsers(selectedChannel);
+
+  const channels = [
+    { id: 'general', name: 'General', icon: FaHashtag, color: 'text-gray-600', description: 'General discussions' },
+    { id: 'ece', name: 'Electronics', icon: FaGraduationCap, color: 'text-blue-500', description: 'ECE students' },
+    { id: 'ee', name: 'Electrical', icon: FaGraduationCap, color: 'text-green-500', description: 'EE students' },
+    { id: 'me', name: 'Mechanical', icon: FaGraduationCap, color: 'text-red-500', description: 'ME students' },
+    { id: 'ce', name: 'Civil', icon: FaGraduationCap, color: 'text-yellow-500', description: 'CE students' },
+    { id: 'first-year', name: 'First Year', icon: FaRocket, color: 'text-purple-500', description: 'First year topics' },
+    { id: 'projects', name: 'Projects', icon: FaRocket, color: 'text-pink-500', description: 'Project discussions' },
+  ];
 
   useEffect(() => {
-    const q = query(collection(db, 'messages'), orderBy('timestamp', 'desc'), limit(100));
+    const q = query(
+      collection(db, 'messages'), 
+      where('channel', '==', selectedChannel),
+      orderBy('timestamp', 'desc'), 
+      limit(100)
+    );
+    
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const messagesData = [];
       querySnapshot.forEach((doc) => {
@@ -32,18 +77,21 @@ const DiscussionRoom = () => {
       setMessages(messagesData.reverse());
     });
 
-    // Simulate active users
-    const interval = setInterval(() => {
-      setActiveUsers(prev => {
-        const change = Math.floor(Math.random() * 3) - 1;
-        return Math.max(20, Math.min(30, prev + change));
-      });
-    }, 10000);
+    return () => unsubscribe();
+  }, [selectedChannel]);
 
-    return () => {
-      unsubscribe();
-      clearInterval(interval);
+  // Handle mobile responsiveness
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
     };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const sendMessage = async (text) => {
@@ -56,7 +104,10 @@ const DiscussionRoom = () => {
         userEmail: user.email,
         userName: userProfile?.displayName || user.email.split('@')[0],
         userId: user.uid,
-        timestamp: serverTimestamp()
+        channel: selectedChannel,
+        userBranch: getUserBranch(),
+        timestamp: serverTimestamp(),
+        reactions: {}
       });
     } catch (error) {
       console.error('Error sending message:', error);
@@ -83,158 +134,273 @@ const DiscussionRoom = () => {
     return 'U';
   };
 
+  const getUserBranch = () => {
+    // You can get this from user profile or based on email/registration
+    return 'ECE'; // Default for demo
+  };
+
+  const filteredMessages = messages.filter(message =>
+    message.text.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const currentChannel = channels.find(ch => ch.id === selectedChannel);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleChannelSelect = (channelId) => {
+    setSelectedChannel(channelId);
+    if (window.innerWidth <= 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200">
-        <div className="container-responsive">
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/')}
-                className="p-3 rounded-xl hover:bg-gray-100 transition-all duration-200 lg:hidden"
-              >
-                <FaArrowLeft className="text-gray-600 text-lg" />
-              </button>
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl shadow-lg">
-                  <FaComments className="text-white text-xl" />
+    <div className="flex h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && window.innerWidth <= 1024 && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed lg:relative z-50 h-full ${
+        isSidebarOpen ? 'translate-x-0 w-80' : '-translate-x-full lg:translate-x-0 lg:w-20'
+      } bg-gray-800 transition-all duration-300 flex flex-col border-r border-gray-700`}>
+        
+        {/* Sidebar Header */}
+        <div className="p-4 border-b border-gray-700 flex-shrink-0">
+          {isSidebarOpen ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                  <FaComments className="text-white text-lg" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                    Discussion Hub
-                  </h1>
-                  <p className="text-sm text-gray-500 flex items-center">
-                    <FaUsers className="mr-1 text-green-500" />
-                    <span className="text-green-600 font-semibold">{activeUsers}</span>
-                    <span className="text-gray-400 ml-1">students online</span>
-                  </p>
+                  <h1 className="font-bold text-lg">Engineering Hub</h1>
+                  <p className="text-gray-400 text-sm">Discussion Rooms</p>
                 </div>
               </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              {/* User Info */}
-              <div className="hidden md:flex items-center space-x-3 bg-white/60 backdrop-blur-sm rounded-2xl px-4 py-2 border border-gray-200">
-                <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
-                  {getUserInitial()}
-                </div>
-                <div className="hidden lg:block">
-                  <p className="text-sm font-semibold text-gray-900 max-w-32 truncate">
-                    {userProfile?.displayName || 'User'}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {user?.email}
-                  </p>
-                </div>
-              </div>
-
-              {/* Logout Button */}
               <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm font-semibold"
+                onClick={toggleSidebar}
+                className="p-2 hover:bg-gray-700 rounded-lg transition-colors lg:flex hidden"
               >
-                <FaSignOutAlt className="text-sm" />
-                <span className="hidden sm:inline">Logout</span>
+                <FaArrowLeft className="text-gray-400" />
+              </button>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="p-2 hover:bg-gray-700 rounded-lg transition-colors lg:hidden"
+              >
+                <FaTimes className="text-gray-400" />
               </button>
             </div>
-          </div>
+          ) : (
+            <div className="flex justify-center">
+              <button
+                onClick={toggleSidebar}
+                className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <FaComments className="text-gray-400 text-xl" />
+              </button>
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex container-responsive py-6 gap-6">
-        {/* Sidebar */}
-        <div className="hidden lg:block w-80 flex-shrink-0">
-          <div className="glass-card p-6 rounded-2xl h-full">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <FaGraduationCap className="text-white text-2xl" />
+        {/* Channels Section */}
+        {isSidebarOpen && (
+          <>
+            <div className="p-4 flex-1 overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Channels</h2>
+                <button className="text-gray-400 hover:text-white p-1">
+                  <FaPlus className="text-sm" />
+                </button>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Engineering Community</h3>
-              <p className="text-sm text-gray-600">Connect with fellow MAKAUT students</p>
+              <div className="space-y-1">
+                {channels.map((channel) => {
+                  const Icon = channel.icon;
+                  return (
+                    <button
+                      key={channel.id}
+                      onClick={() => handleChannelSelect(channel.id)}
+                      className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${
+                        selectedChannel === channel.id 
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg' 
+                          : 'hover:bg-gray-700'
+                      }`}
+                    >
+                      <Icon className={`${channel.color} text-lg`} />
+                      <div className="flex-1 text-left">
+                        <div className="font-medium">#{channel.name}</div>
+                        <div className="text-xs text-gray-400 truncate">{channel.description}</div>
+                      </div>
+                      <span className="text-xs text-gray-400 bg-gray-700 px-2 py-1 rounded-full">
+                        {onlineUsers.length}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Online Users */}
-            <div className="mb-6">
+            <div className="p-4 border-t border-gray-700 flex-shrink-0">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="font-semibold text-gray-900">Online Now</h4>
-                <div className="flex items-center text-green-500">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                  <span className="text-sm font-semibold">{activeUsers}</span>
+                <h2 className="text-gray-400 text-sm font-semibold uppercase tracking-wider">
+                  Online — {onlineUsers.length}
+                </h2>
+                <div className="flex space-x-2">
+                  <button 
+                    onClick={() => setNotifications(!notifications)}
+                    className={`p-1 rounded transition-colors ${
+                      notifications ? 'text-green-400' : 'text-gray-400'
+                    }`}
+                  >
+                    {notifications ? <FaVolumeUp /> : <FaVolumeMute />}
+                  </button>
                 </div>
               </div>
-              <div className="space-y-3">
-                {['ECE', 'EE', 'ME', 'CE', 'CSE'].map((branch, index) => (
-                  <div key={branch} className="flex items-center justify-between p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/20">
-                    <div className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-3 ${
-                        branch === 'ECE' ? 'bg-blue-500' :
-                        branch === 'EE' ? 'bg-green-500' :
-                        branch === 'ME' ? 'bg-red-500' :
-                        branch === 'CE' ? 'bg-yellow-500' : 'bg-purple-500'
-                      }`}></div>
-                      <span className="text-sm font-medium text-gray-700">{branch}</span>
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {onlineUsers.map((user, index) => (
+                  <div key={user.uid || index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    <div className="relative">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                        {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-gray-800 bg-green-500"></div>
                     </div>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                      {Math.floor(Math.random() * 8) + 3} online
-                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{user.displayName || user.email}</p>
+                      <p className="text-xs text-gray-400 truncate">{user.userBranch || 'Student'}</p>
+                    </div>
                   </div>
                 ))}
+                {onlineUsers.length === 0 && (
+                  <div className="text-center py-4 text-gray-400 text-sm">
+                    No one online in this channel
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Quick Tips */}
-            <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-4 text-white">
-              <div className="flex items-center mb-2">
-                <FaRocket className="text-white text-lg mr-2" />
-                <h4 className="font-semibold">Pro Tip</h4>
+            {/* User Profile */}
+            <div className="p-4 border-t border-gray-700 flex-shrink-0">
+              <div className="flex items-center space-x-3 p-3 bg-gray-750 rounded-xl">
+                <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  {getUserInitial()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold truncate">{userProfile?.displayName || 'User'}</p>
+                  <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                  title="Sign Out"
+                >
+                  <FaSignOutAlt className="text-sm" />
+                </button>
               </div>
-              <p className="text-sm opacity-90">
-                Share your doubts and help others. Together we learn better!
-              </p>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        
+        {/* Mobile Header */}
+        <div className="bg-gray-750 border-b border-gray-700 p-4 lg:hidden">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <FaBars className="text-gray-400" />
+              </button>
+              {currentChannel && (
+                <div>
+                  <h1 className="text-lg font-bold">#{currentChannel.name}</h1>
+                  <p className="text-gray-400 text-sm">{onlineUsers.length} online</p>
+                </div>
+              )}
+            </div>
+            <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+              <FaSearch className="text-gray-400" />
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop Chat Header */}
+        <div className="bg-gray-750 border-b border-gray-700 p-4 hidden lg:block">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleSidebar}
+                className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <FaBars className="text-gray-400" />
+              </button>
+              
+              <div className="flex items-center space-x-3">
+                {currentChannel && (
+                  <>
+                    <div className={`p-2 rounded-xl ${
+                      selectedChannel === 'general' ? 'bg-gray-700' :
+                      selectedChannel === 'ece' ? 'bg-blue-500/20' :
+                      selectedChannel === 'ee' ? 'bg-green-500/20' :
+                      selectedChannel === 'me' ? 'bg-red-500/20' :
+                      selectedChannel === 'ce' ? 'bg-yellow-500/20' : 'bg-purple-500/20'
+                    }`}>
+                      <currentChannel.icon className={`${currentChannel.color} text-lg`} />
+                    </div>
+                    <div>
+                      <h1 className="text-xl font-bold">#{currentChannel.name}</h1>
+                      <p className="text-gray-400 text-sm flex items-center">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                        {onlineUsers.length} members online
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search messages..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 w-64"
+                />
+              </div>
+              
+              <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-gray-400 hover:text-white">
+                <FaBell />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Chat Area */}
-        <div className="flex-1 flex flex-col min-w-0">
-          <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-            {/* Chat Header */}
-            <div className="bg-gradient-to-r from-primary-50 to-secondary-50 border-b border-gray-200 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">MAKAUT Community Chat</h3>
-                  <p className="text-sm text-gray-600">Real-time discussion with engineering students</p>
-                </div>
-                <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span>Live</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Messages */}
-            <MessageList messages={messages} />
-            <MessageInput onSendMessage={sendMessage} loading={loading} />
-          </div>
-          
-          {/* Mobile User Info */}
-          <div className="lg:hidden bg-white rounded-2xl p-4 mt-4 shadow-lg border border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                {getUserInitial()}
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-gray-900">
-                  {userProfile?.displayName || 'User'}
-                </p>
-                <p className="text-sm text-gray-500 truncate">
-                  {user?.email}
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Messages Area */}
+        <div className="flex-1 flex flex-col bg-gray-750 min-h-0">
+          <MessageList 
+            messages={searchTerm ? filteredMessages : messages} 
+            searchTerm={searchTerm}
+          />
+          <MessageInput 
+            onSendMessage={sendMessage} 
+            loading={loading}
+            channel={currentChannel}
+          />
         </div>
       </div>
     </div>

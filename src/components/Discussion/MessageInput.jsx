@@ -1,61 +1,119 @@
-import React, { useState } from 'react';
-import { FaPaperPlane, FaSmile, FaPaperclip } from 'react-icons/fa';
+import React, { useState, useRef } from 'react';
+import { FaPaperPlane, FaRegSmile, FaPaperclip, FaAt, FaGift } from 'react-icons/fa';
 
-const MessageInput = ({ onSendMessage, loading }) => {
+const MessageInput = ({ onSendMessage, loading, channel }) => {
   const [message, setMessage] = useState('');
+  const textareaRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (message.trim()) {
       onSendMessage(message.trim());
       setMessage('');
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setMessage(e.target.value);
+    
+    // Auto-resize textarea
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
+    }
+  };
+
+  const quickReactions = ['👍', '❤️', '😂', '🎉', '🤔', '👀'];
+
   return (
-    <div className="border-t border-gray-200 bg-white/80 backdrop-blur-md p-6">
-      <form onSubmit={handleSubmit} className="flex space-x-4 items-end">
+    <div className="bg-gray-800 border-t border-gray-700 p-4">
+      {/* Quick Reactions */}
+      <div className="flex items-center space-x-2 mb-3">
+        {quickReactions.map((reaction, index) => (
+          <button
+            key={index}
+            className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-lg"
+            title={`React with ${reaction}`}
+          >
+            {reaction}
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex space-x-3 items-end">
+        {/* Attachment Button */}
+        <button
+          type="button"
+          className="p-3 text-gray-400 hover:text-white hover:bg-gray-700 rounded-xl transition-colors duration-200 flex-shrink-0"
+        >
+          <FaPaperclip className="text-lg" />
+        </button>
+
+        {/* Message Input */}
         <div className="flex-1 relative">
-          <div className="flex space-x-2 mb-2">
-            <button
-              type="button"
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-            >
-              <FaPaperclip className="text-lg" />
-            </button>
-            <button
-              type="button"
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-            >
-              <FaSmile className="text-lg" />
-            </button>
-          </div>
           <textarea
+            ref={textareaRef}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message... (Ask questions, share resources, help others)"
-            className="w-full px-4 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base placeholder-gray-400 transition-all duration-200 resize-none min-h-[60px] max-h-[120px]"
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder={`Message #${channel?.name || 'general'}...`}
+            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 resize-none transition-all duration-200 custom-scrollbar"
             disabled={loading}
             rows="1"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
+            style={{ minHeight: '44px', maxHeight: '120px' }}
           />
+          
+          {/* Input Actions */}
+          <div className="absolute right-3 bottom-3 flex items-center space-x-2">
+            <button
+              type="button"
+              className="p-1 text-gray-400 hover:text-white transition-colors"
+            >
+              <FaAt className="text-lg" />
+            </button>
+            <button
+              type="button"
+              className="p-1 text-gray-400 hover:text-white transition-colors"
+            >
+              <FaRegSmile className="text-lg" />
+            </button>
+            <button
+              type="button"
+              className="p-1 text-gray-400 hover:text-white transition-colors"
+            >
+              <FaGift className="text-lg" />
+            </button>
+          </div>
         </div>
+
+        {/* Send Button */}
         <button
           type="submit"
           disabled={loading || !message.trim()}
-          className="bg-gradient-to-r from-primary-500 to-secondary-500 text-white p-4 rounded-2xl hover:from-primary-600 hover:to-secondary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none flex items-center justify-center min-w-[56px] h-[56px]"
+          className={`p-3 rounded-xl transition-all duration-200 flex items-center justify-center min-w-[44px] h-[44px] ${
+            message.trim()
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+              : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+          }`}
         >
           <FaPaperPlane className="text-lg" />
         </button>
       </form>
-      <div className="flex justify-between items-center mt-3 text-xs text-gray-400">
+
+      {/* Helper Text */}
+      <div className="flex justify-between items-center mt-2 text-xs text-gray-400">
         <span>Press Enter to send • Shift+Enter for new line</span>
-        <span>{message.length}/500</span>
+        <span>{message.length}/2000</span>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ const Header = () => {
   const navigation = [
     { name: 'Home', href: '/', icon: FaHome },
     { name: 'Courses', href: '#courses', icon: FaGraduationCap },
-    { name: 'Resources', href: '#resources', icon: FaFileAlt },
+    { name: 'Resources', href: '/resources', icon: FaBook },
     { name: 'About', href: '#about', icon: FaUsers },
   ];
 
