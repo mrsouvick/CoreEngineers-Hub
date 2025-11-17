@@ -4,8 +4,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import Resources from './pages/Resources'; // Add this import
-
+import About from './pages/About';
+import Resources from './pages/Resources';
 import Discussion from './pages/Discussion';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
@@ -21,7 +21,8 @@ function App() {
           <main className="flex-grow w-screen max-w-screen overflow-x-hidden">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/resources" element={<Resources />} /> {/* Add this route */}
+              <Route path="/about" element={<About />} />
+              <Route path="/resources" element={<Resources />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route 

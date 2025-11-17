@@ -13,7 +13,7 @@ const Header = () => {
     { name: 'Home', href: '/', icon: FaHome },
     { name: 'Courses', href: '#courses', icon: FaGraduationCap },
     { name: 'Resources', href: '/resources', icon: FaBook },
-    { name: 'About', href: '#about', icon: FaUsers },
+    { name: 'About', href: '/about', icon: FaUsers },
   ];
 
   const handleLogout = async () => {

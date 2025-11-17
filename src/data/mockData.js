@@ -3,8 +3,9 @@ export const teamMembers = [
     id: 1,
     name: "Souvick Kumar Halder",
     role: "Founder & Admin",
-    description: "Responsible for overall planning, management, and maintaining the academic direction of the channel.",
+    description: "Responsible for overall planning, management, and maintaining the academic direction of the platform. Ensures quality content delivery.",
     avatar: "https://scontent.fccu3-1.fna.fbcdn.net/v/t39.30808-6/544989577_1788689405065662_8868460709953778179_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=f1oomo6UqgUQ7kNvwHEhDLW&_nc_oc=AdkO9wA6P0vTyPsVdtS9nEONOiDW7WtPdKI64XjnI-uxVjFTnp3Rtf-GMe-jlxTJVlI&_nc_zt=23&_nc_ht=scontent.fccu3-1.fna&_nc_gid=sbIrNQ8DBZqRLUmRHdXwOQ&oh=00_Afjd43s2Uol1zInUeyK3juJ4PBxTtZbnfZzSwJLyHDWWyQ&oe=691EDB50",
+    expertise: ["Platform Management", "Content Strategy", "Student Engagement"],
     social: {
       linkedin: "https://www.linkedin.com/in/souvick-kumar-halder-752508292/",
       twitter: "#",
@@ -14,9 +15,10 @@ export const teamMembers = [
   {
     id: 2,
     name: "Surajit Ghosh",
-    role: "Tutor",
-    description: "Creates high-quality, easy-to-follow lectures and academic content for Electronics and Communication Engineering.",
+    role: "Senior Tutor & Content Creator",
+    description: "Creates high-quality, easy-to-follow lectures and academic content for Electronics and Communication Engineering subjects.",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+    expertise: ["Electronics", "Signal Processing", "Digital Systems"],
     social: {
       linkedin: "#",
       twitter: "#",
@@ -26,9 +28,10 @@ export const teamMembers = [
   {
     id: 3,
     name: "Tanmay Maity",
-    role: "Tutor",
-    description: "Handles semester-wise explanations, problem solutions, and core subject videos for Mechanical Engineering.",
+    role: "Mechanical Engineering Tutor",
+    description: "Handles semester-wise explanations, problem solutions, and core subject videos for Mechanical Engineering students.",
     avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=400&h=400&fit=crop&crop=face",
+    expertise: ["Thermodynamics", "Mechanics", "Machine Design"],
     social: {
       linkedin: "#",
       twitter: "#",
@@ -38,9 +41,10 @@ export const teamMembers = [
   {
     id: 4,
     name: "Sribash Adak",
-    role: "Graphics Designer",
-    description: "Designs thumbnails, visuals, and branding elements to keep the channel professional and appealing.",
+    role: "Graphics & UI Designer",
+    description: "Designs thumbnails, visuals, and branding elements to keep the platform professional, appealing and user-friendly.",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
+    expertise: ["UI/UX Design", "Branding", "Visual Content"],
     social: {
       linkedin: "#",
       twitter: "#",
